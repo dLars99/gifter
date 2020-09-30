@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Gifter.Repositories
 {
-    public class UserProfileRepository : BaseRepository
+    public class UserProfileRepository : BaseRepository, IUserProfileRepository
     {
-        public UserProfileRepository(IConfiguration configuration) : base(configuration) {}
+        public UserProfileRepository(IConfiguration configuration) : base(configuration) { }
 
         public List<UserProfile> GetAll()
         {
@@ -20,9 +20,9 @@ namespace Gifter.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                SELECT [Name], Email, ImageUrl, Bio, DateCreated
-                  FROM UserProfile p 
-              ORDER BY p.DateCreated";
+                SELECT Id, [Name], Email, ImageUrl, Bio, DateCreated
+                  FROM UserProfile
+              ORDER BY DateCreated";
 
                     var reader = cmd.ExecuteReader();
 
@@ -31,7 +31,7 @@ namespace Gifter.Repositories
                     {
                         posts.Add(new UserProfile()
                         {
-                            Id = DbUtils.GetInt(reader, "PostId"),
+                            Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name"),
                             Email = DbUtils.GetString(reader, "Email"),
                             Bio = DbUtils.GetString(reader, "Bio"),
