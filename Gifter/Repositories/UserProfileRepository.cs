@@ -93,10 +93,12 @@ namespace Gifter.Repositories
                     cmd.CommandText = @"
                 SELECT up.[Name], up.Email, up.ImageUrl AS UserImageUrl, up.Bio, up.DateCreated AS UserDateCreated,
                        p.Id AS PostId, p.Title, p.Caption, p.DateCreated AS PostDateCreated, 
-                       p.ImageUrl AS PostImageUrl, p.UserProfileId AS UserProfileI
+                       p.ImageUrl AS PostImageUrl, p.UserProfileId AS UserProfileId,
+                       c.Id AS CommentId, c.Message, c.PostId AS CommentPostId
                   FROM UserProfile up
              LEFT JOIN Post p ON p.UserProfileId = up.Id
-                       WHERE up.Id = @Id";
+             LEFT JOIN Comment c ON c.PostId = p.Id
+                 WHERE up.Id = @Id";
 
                     DbUtils.AddParameter(cmd, "@Id", id);
 
@@ -124,10 +126,22 @@ namespace Gifter.Repositories
                                 Caption = DbUtils.GetString(reader, "Caption"),
                                 DateCreated = DbUtils.GetDateTime(reader, "PostDateCreated"),
                                 ImageUrl = DbUtils.GetString(reader, "PostImageUrl"),
-                                UserProfileId = id
+                                UserProfileId = id,
+                                Comments = new List<Comment>()
                             });
                         }
-
+                        if (DbUtils.IsNotDbNull(reader, "CommentId"))
+                        {
+                            Comment comment = new Comment()
+                            {
+                                Id = DbUtils.GetInt(reader, "CommentId"),
+                                Message = DbUtils.GetString(reader, "Message"),
+                                PostId = DbUtils.GetInt(reader, "CommentPostId"),
+                                UserProfileId = id
+                            };
+                            Post postWithComments = userProfile.Posts.Find(p => p.Id == comment.PostId);
+                            postWithComments.Comments.Add(comment);
+                        }
                     }
 
                     reader.Close();
