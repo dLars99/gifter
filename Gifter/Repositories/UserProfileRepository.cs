@@ -107,16 +107,19 @@ namespace Gifter.Repositories
                     UserProfile userProfile = null;
                     while (reader.Read())
                     {
-                        userProfile = new UserProfile()
+                        if (userProfile == null)
                         {
-                            Id = id,
-                            Name = DbUtils.GetString(reader, "Name"),
-                            Email = DbUtils.GetString(reader, "Email"),
-                            Bio = DbUtils.GetString(reader, "Bio"),
-                            ImageUrl = DbUtils.GetString(reader, "UserImageUrl"),
-                            DateCreated = DbUtils.GetDateTime(reader, "UserDateCreated"),
-                            Posts = new List<Post>()
-                        };
+                            userProfile = new UserProfile()
+                            {
+                                Id = id,
+                                Name = DbUtils.GetString(reader, "Name"),
+                                Email = DbUtils.GetString(reader, "Email"),
+                                Bio = DbUtils.GetString(reader, "Bio"),
+                                ImageUrl = DbUtils.GetString(reader, "UserImageUrl"),
+                                DateCreated = DbUtils.GetDateTime(reader, "UserDateCreated"),
+                                Posts = new List<Post>()
+                            };
+                        }
                         if (DbUtils.IsNotDbNull(reader, "PostId"))
                         {
                             var postId = DbUtils.GetInt(reader, "PostId");
