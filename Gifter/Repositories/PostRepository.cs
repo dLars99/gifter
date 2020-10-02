@@ -147,11 +147,10 @@ namespace Gifter.Repositories
                     cmd.CommandText = @"
                         INSERT INTO Post (Title, Caption, DateCreated, ImageUrl, UserProfileId)
                         OUTPUT INSERTED.ID
-                        VALUES (@Title, @Caption, @DateCreated, @ImageUrl, @UserProfileId)";
+                        VALUES (@Title, @Caption, CURRENT_TIMESTAMP, @ImageUrl, @UserProfileId)";
 
                     DbUtils.AddParameter(cmd, "@Title", post.Title);
                     DbUtils.AddParameter(cmd, "@Caption", post.Caption);
-                    DbUtils.AddParameter(cmd, "@DateCreated", post.DateCreated);
                     DbUtils.AddParameter(cmd, "@ImageUrl", post.ImageUrl);
                     DbUtils.AddParameter(cmd, "@UserProfileId", post.UserProfileId);
 
