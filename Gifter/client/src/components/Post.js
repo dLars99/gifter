@@ -1,5 +1,6 @@
 import React from "react";
-import { Card, CardImg, CardBody } from "reactstrap";
+import { Card, CardImg, CardBody, ListGroup } from "reactstrap";
+import Comment from "./Comment"
 
 const Post = ({ post }) => {
     return (
@@ -11,6 +12,14 @@ const Post = ({ post }) => {
                     <strong>{post.title}</strong>
                 </p>
                 <p>{post.caption}</p>
+                {(post.comments.length !== 0)
+                    ? <ListGroup>
+                        {post.comments.map(comment => (
+                            <Comment key={comment.id} comment={comment} />
+                        ))}
+                    </ListGroup>
+                    : null
+                }
             </CardBody>
         </Card>
     );
