@@ -147,11 +147,10 @@ namespace Gifter.Repositories
                     cmd.CommandText = @"
                         INSERT INTO Post (Title, Caption, DateCreated, ImageUrl, UserProfileId)
                         OUTPUT INSERTED.ID
-                        VALUES (@Title, @Caption, @DateCreated, @ImageUrl, @UserProfileId)";
+                        VALUES (@Title, @Caption, CURRENT_TIMESTAMP, @ImageUrl, @UserProfileId)";
 
                     DbUtils.AddParameter(cmd, "@Title", post.Title);
                     DbUtils.AddParameter(cmd, "@Caption", post.Caption);
-                    DbUtils.AddParameter(cmd, "@DateCreated", post.DateCreated);
                     DbUtils.AddParameter(cmd, "@ImageUrl", post.ImageUrl);
                     DbUtils.AddParameter(cmd, "@UserProfileId", post.UserProfileId);
 
@@ -214,9 +213,12 @@ namespace Gifter.Repositories
                         p.ImageUrl AS PostImageUrl, p.UserProfileId AS PostUserProfileId,
 
                         up.Name, up.Bio, up.Email, up.DateCreated AS UserProfileDateCreated, 
-                        up.ImageUrl AS UserProfileImageUrl
+                        up.ImageUrl AS UserProfileImageUrl,
+                        
+                        c.Id AS CommentId, c.Message, c.UserProfileId AS CommentUserProfileId
                     FROM Post p 
                         LEFT JOIN UserProfile up ON p.UserProfileId = up.id
+                        LEFT JOIN Comment c on c.PostId = p.id
                     WHERE p.Title LIKE @Criterion OR p.Caption LIKE @Criterion";
 
                     if (sortDescending)
@@ -235,7 +237,21 @@ namespace Gifter.Repositories
                     var posts = new List<Post>();
                     while (reader.Read())
                     {
-                        posts.Add(NewPostFromReader(reader));
+                        var postId = DbUtils.GetInt(reader, "PostId");
+
+                        var existingPost = posts.FirstOrDefault(p => p.Id == postId);
+                        if (existingPost == null)
+                        {
+                            existingPost = NewPostFromReader(reader);
+                            existingPost.Comments = new List<Comment>();
+
+                            posts.Add(existingPost);
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "CommentId"))
+                        {
+                            existingPost.Comments.Add(NewCommentFromReader(reader, postId));
+                        }
                     }
 
                     reader.Close();
