@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react"
 import { PostContext } from "../providers/PostProvider"
+import { Container, Form, FormGroup, Label, Input } from "reactstrap"
 
 const PostForm = (post) => {
 
@@ -36,34 +37,34 @@ const PostForm = (post) => {
     }
 
     return (
-        <section>
-            <form>
+        <Container>
+            <Form className="m-4">
                 <div>
                     <h2>Post New Gif</h2>
                 </div>
-                <fieldset>
-                    <label htmlFor="title">Title</label>
-                    <input type="text" id="title" name="title" placeholder="Title this GIF..." maxLength="255" onChange={handleFieldChange} />
-                </fieldset>
-                <fieldset>
-                    <label htmlFor="imageUrl">URL</label>
-                    <input type="text" id="imageUrl" name="imageUrl" placeholder="URL of the GIF you want to share" maxLength="255" onChange={handleFieldChange} />
+                <FormGroup>
+                    <Label for="title">Title</Label>
+                    <Input type="text" id="title" name="title" placeholder="Title this GIF..." maxLength="255" onChange={handleFieldChange} />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="imageUrl">URL</Label>
+                    <Input type="text" id="imageUrl" name="imageUrl" placeholder="URL of the GIF you want to share" maxLength="255" onChange={handleFieldChange} />
                     <div>
                         {newPost.imageUrl
                             ? <img src={newPost.imageUrl} alt="Preview" />
                             : null
                         }
                     </div>
-                </fieldset>
-                <fieldset>
-                    <label htmlFor="caption">Caption (Optional)</label>
-                    <input type="text" id="caption" name="caption" placeholder="Caption this GIF" maxLength="255" onChange={handleFieldChange} />
-                </fieldset>
-                <fieldset>
+                </FormGroup>
+                <FormGroup>
+                    <Label for="caption">Caption (Optional)</Label>
+                    <Input type="text" id="caption" name="caption" placeholder="Caption this GIF" maxLength="255" onChange={handleFieldChange} />
+                </FormGroup>
+                <FormGroup>
                     <button type="button" onClick={submitNewPost} disabled={isLoading}>Submit GIF</button>
-                </fieldset>
-            </form>
-        </section>
+                </FormGroup>
+            </Form>
+        </Container>
     )
 }
 

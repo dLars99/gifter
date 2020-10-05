@@ -6,10 +6,12 @@ const Comment = ({ comment }) => {
     const [userProfile, setUserProfile] = useState({})
 
     useEffect(() => {
-        return fetch(`/api/userprofile/${comment.userProfileId}`)
-            .then((res) => res.json())
-            .then(setUserProfile)
-
+        const getUser = async () => {
+            const userData = await fetch(`/api/userprofile/${comment.userProfileId}`)
+            const dataJson = await userData.json()
+            setUserProfile(dataJson)
+        }
+        getUser()
     }, [])
 
 

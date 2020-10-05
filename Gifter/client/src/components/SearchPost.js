@@ -1,23 +1,24 @@
 import React, { useContext } from "react"
 import { PostContext } from "../providers/PostProvider"
+import { Container, Label, Input } from "reactstrap"
 
 const SearchPost = () => {
 
-    const { posts, setPosts, getAllPosts } = useContext(PostContext)
+    const { getAllPosts, searchPosts } = useContext(PostContext)
 
     const handleSearchChange = evt => {
-        return fetch(`/api/post/search?q=${evt.target.value}&sortDesc=false`)
-            .then((res) => res.json())
-            .then(setPosts);
+        searchPosts(evt.target.value)
     }
 
     return (
-        <section>
-            <label htmlFor="search">Search Posts</label>
-            <input type="text" id="search" name="search" placeholder="Enter search term..."
-                onChange={handleSearchChange} />
+        <>
+            <Container>
+                <Label for="search">Search Posts</Label>
+                <Input type="text" id="search" name="search" placeholder="Enter search term..."
+                    onChange={handleSearchChange} />
+            </Container>
             <hr />
-        </section>
+        </>
     )
 }
 
