@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react"
 import { PostContext } from "../providers/PostProvider"
-import { Container, Form, FormGroup, Label, Input } from "reactstrap"
+import { Container, Form, FormGroup, Label, Input, Button } from "reactstrap"
+import { useHistory } from "react-router-dom"
 
 const PostForm = (post) => {
 
@@ -8,6 +9,8 @@ const PostForm = (post) => {
 
     const [newPost, setNewPost] = useState({})
     const [isLoading, setIsLoading] = useState(false)
+
+    const history = useHistory()
 
     const handleFieldChange = evt => {
         const updatedState = { ...newPost }
@@ -26,14 +29,11 @@ const PostForm = (post) => {
             userProfileId: 1
         }
         // Current date will be added to the new post by the API
+
         addPost(postObject)
             .then(() => {
-                // Clear fields
-                setNewPost({})
-                setIsLoading(false)
-                getAllPosts()
+                history.push("/")
             })
-
     }
 
     return (
@@ -61,7 +61,7 @@ const PostForm = (post) => {
                     <Input type="text" id="caption" name="caption" placeholder="Caption this GIF" maxLength="255" onChange={handleFieldChange} />
                 </FormGroup>
                 <FormGroup>
-                    <button type="button" onClick={submitNewPost} disabled={isLoading}>Submit GIF</button>
+                    <Button color="info" onClick={submitNewPost} disabled={isLoading}>Submit GIF</Button>
                 </FormGroup>
             </Form>
         </Container>
