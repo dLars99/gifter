@@ -135,6 +135,10 @@ namespace Gifter.Repositories
                                     DateCreated = DbUtils.GetDateTime(reader, "PostDateCreated"),
                                     ImageUrl = DbUtils.GetString(reader, "PostImageUrl"),
                                     UserProfileId = id,
+                                    UserProfile = new UserProfile()
+                                    {
+                                        Name = userProfile.Name
+                                    },
                                     Comments = new List<Comment>()
                                 };
                                 userProfile.Posts.Add(existingPost);
