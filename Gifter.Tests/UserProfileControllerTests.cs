@@ -31,6 +31,20 @@ namespace Gifter.Tests
         }
 
         [Fact]
+        public void Get_By_Id_Returns_Not_Found_For_Invalid_Id()
+        {
+            var userProfiles = new List<UserProfile>();
+
+            var repo = new InMemoryUserProfileRepository(userProfiles);
+            var controller = new UserProfileController(repo);
+
+            var result = controller.Get(1);
+
+            Assert.IsType<NotFoundResult>(result);
+
+        }
+
+        [Fact]
         public void Get_By_Id_Returns_Correct_UserProfile()
         {
             var testUserId = 99;
@@ -71,6 +85,34 @@ namespace Gifter.Tests
             controller.Post(newUserProfile);
 
             Assert.Equal(userProfileCount + 1, repo.InternalData.Count);
+        }
+
+        [Fact]
+        public void Put_Method_Returns_Bad_Request_When_Ids_Do_Not_Match()
+        {
+            var testUserProfileId = 99;
+            var userProfiles = CreateTestUserProfiles(5);
+            userProfiles[0].Id = testUserProfileId;
+
+            var repo = new InMemoryUserProfileRepository(userProfiles);
+            var controller = new UserProfileController(repo);
+
+            var userToUpdate = new UserProfile()
+            {
+                Id = testUserProfileId,
+                Name = "Name",
+                Email = "Email@email.com",
+                FirebaseUserId = "abcdefghijklmnopqrstuvwxyzaa",
+                ImageUrl = "http://user.image.com",
+                Bio = "I am the very model of a modern major general.",
+                DateCreated = DateTime.Today
+            };
+            var someOtherUserProfileId = testUserProfileId + 1;
+
+            var result = controller.Put(someOtherUserProfileId, userToUpdate);
+
+            Assert.IsType<BadRequestResult>(result);
+
         }
 
         [Fact]
