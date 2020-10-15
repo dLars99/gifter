@@ -47,6 +47,43 @@ namespace Gifter.Repositories
             }
         }
 
+        public UserProfile GetByFirebaseUserId(string firebaseUserId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT Id, [Name], Email, ImageUrl, Bio, DateCreated
+                          FROM UserProfile
+                         WHERE FirebaseUserId = @FirebaseuserId";
+
+                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
+
+                    UserProfile userProfile = null;
+
+                    var reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        userProfile = new UserProfile()
+                        {
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Name = DbUtils.GetString(reader, "Name"),
+                            FirebaseUserId = firebaseUserId,
+                            Email = DbUtils.GetString(reader, "Email"),
+                            Bio = DbUtils.GetString(reader, "Bio"),
+                            ImageUrl = DbUtils.GetString(reader, "ImageUrl"),
+                            DateCreated = DbUtils.GetDateTime(reader, "DateCreated")
+                        };
+                    }
+                    reader.Close();
+
+                    return userProfile;
+                }
+            }
+        }
+
         public UserProfile GetById(int id)
         {
             using (var conn = Connection)

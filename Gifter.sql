@@ -23,11 +23,14 @@ GO
 
 CREATE TABLE [UserProfile] (
   [Id] integer PRIMARY KEY identity NOT NULL,
+  [FirebaseUserId] nvarchar(28) NOT NULL,
   [Name] nvarchar(255) NOT NULL,
   [Email] nvarchar(255) NOT NULL,
   [ImageUrl] nvarchar(255),
   [Bio] nvarchar(255),
-  [DateCreated] datetime NOT NULL
+  [DateCreated] datetime NOT NULL,
+
+  CONSTRAINT UQ_FirebaseUserId UNIQUE(FirebaseUserId)
 )
 GO
 
@@ -58,13 +61,13 @@ ALTER TABLE [Subscription] ADD FOREIGN KEY ([ProviderId]) REFERENCES [UserProfil
 GO
 SET IDENTITY_INSERT [UserProfile] ON
 INSERT INTO [UserProfile]
-  ([Id], [Name], [Email], [ImageUrl], [Bio], [DateCreated])
+  ([Id], [Name], [FirebaseUserId], [Email], [ImageUrl], [Bio], [DateCreated])
 VALUES 
-  (1, 'Oliver Hardy', 'olie@email.com', null, null, '06-21-2020');
+  (1, 'Oliver Hardy', 'e19XqCHgdXamOjIJc2gFh4I33XG2', 'olie@email.com', null, null, '06-21-2020');
 INSERT INTO [UserProfile]
-  ([Id], [Name], [Email], [ImageUrl], [Bio], [DateCreated])
+  ([Id], [Name], [FirebaseUserId], [Email], [ImageUrl], [Bio], [DateCreated])
 VALUES 
-  (2, 'Stan Laurel', 'stan@email.com', null, null, '04-20-2020');
+  (2, 'Stan Laurel', 'HxZmDRkRKDQEHzO36Q9HzKYyzLx2', 'stan@email.com', null, null, '04-20-2020');
 SET IDENTITY_INSERT [UserProfile] OFF
 SET IDENTITY_INSERT [Post] ON
 INSERT INTO [Post]
