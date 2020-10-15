@@ -63,12 +63,19 @@ namespace Gifter.Tests.Mocks
 
         public void Update(UserProfile userProfile)
         {
-            var postToUpdate = _data.FirstOrDefault(u => u.Id == userProfile.Id);
+            var currentUserProfile = _data.FirstOrDefault(u => u.Id == userProfile.Id);
 
-            if (postToUpdate == null)
+            if (currentUserProfile == null)
             {
                 return;
             }
+
+            currentUserProfile.Name = userProfile.Name;
+            currentUserProfile.ImageUrl = userProfile.ImageUrl;
+            currentUserProfile.FirebaseUserId = userProfile.FirebaseUserId;
+            currentUserProfile.Email = userProfile.Email;
+            currentUserProfile.Bio = userProfile.Bio;
+            currentUserProfile.DateCreated = userProfile.DateCreated;
         }
     }
 }
