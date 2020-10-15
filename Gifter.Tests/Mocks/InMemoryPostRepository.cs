@@ -69,7 +69,15 @@ namespace Gifter.Tests.Mocks
 
         public List<Post> Search(string criterion, bool sortDescending)
         {
-            throw new NotImplementedException();
+            var matchedPosts = _data.Where(p => p.Title.Contains(criterion) || p.Caption.Contains(criterion));
+            if (sortDescending)
+            {
+                return matchedPosts.OrderByDescending(p => p.DateCreated).ToList();
+            }
+            else
+            {
+                return matchedPosts.OrderBy(p => p.DateCreated).ToList();
+            }
         }
 
         public List<Post> GetAllWithComments()

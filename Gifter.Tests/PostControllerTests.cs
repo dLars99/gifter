@@ -179,6 +179,36 @@ namespace Gifter.Tests
             Assert.Null(postFromDb);
         }
 
+        [Fact]
+        public void Search_Returns_Matching_Results()
+        {
+            var postCount = 20;
+            var posts = CreateTestPosts(postCount);
+            var query1 = "Caption";
+            var query2 = "2";
+
+            var repo = new InMemoryPostRepository(posts);
+            var controller = new PostController(repo);
+
+            var result1 = controller.Search(query1, false);
+            var result2 = controller.Search(query2, false);
+            var resultDesc = controller.Search(query1, true);
+
+            var okObject = Assert.IsType<OkObjectResult>(result1);
+            var actualPost = Assert.IsType<List<Post>>(okObject.Value);
+
+            var okObjectDesc = Assert.IsType<OkObjectResult>(resultDesc);
+            var descendingPosts = Assert.IsType<List<Post>>(okObjectDesc.Value);
+
+            var ascendingPosts = posts.AsEnumerable().Reverse();
+
+            Assert.Equal(postCount, actualPost.Count); // All posts should contain "Caption"
+            Assert.Equal(ascendingPosts, actualPost); // First query should return ascending order
+            Assert.NotNull(result2); // Verify second result returned posts
+            Assert.Equal(posts, descendingPosts); // Original posts are in descending order
+
+        }
+
         private List<Post> CreateTestPosts(int count)
         {
             var posts = new List<Post>();
