@@ -31,14 +31,23 @@ export const PostProvider = (props) => {
 
     const searchPosts = (searchTerm) => {
         getToken().then((token) =>
-        fetch(`/api/post/search?q=${searchTerm}&sortDesc=false`)
-            .then((res) => res.json())
+        fetch(`/api/post/search?q=${searchTerm}&sortDesc=false`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((res) => res.json())
             .then(setPosts));
     };
 
     const getPost = (id) => {
         getToken().then((token) => {
-        return fetch(`/api/post/${id}/getwithcomments`).then((res) => res.json())});
+        return fetch(`/api/post/${id}/getwithcomments`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((res) => res.json())});
     };
 
     return (
