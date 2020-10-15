@@ -85,10 +85,5 @@ namespace Gifter.Controllers
             _userProfileRepository.Delete(id);
             return NoContent();
         }
-
-        public IActionResult Login()
-        {
-
-        }
     }
 }
